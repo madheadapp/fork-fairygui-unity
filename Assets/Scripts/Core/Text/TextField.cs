@@ -809,6 +809,7 @@ namespace FairyGUI
                             || ch == '.' || ch == '"' || ch == '\''
                             || format.specialStyle == TextFormat.SpecialStyle.Subscript
                             || format.specialStyle == TextFormat.SpecialStyle.Superscript
+                            || RTLSupport.IsAdditionalEnglishCharacter( ch )
                             || _textDirection != RTLSupport.DirectionType.UNKNOW && RTLSupport.IsArabicLetter(ch))
                         {
                             wordLen++;

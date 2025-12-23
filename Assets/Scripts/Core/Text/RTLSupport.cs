@@ -50,6 +50,46 @@ namespace FairyGUI
         private static StringBuilder sbN = new StringBuilder();
         private static StringBuilder sbFinal = new StringBuilder();
         private static StringBuilder sbReverse = new StringBuilder();
+        
+        // Extra characters that should be treated as English characters
+        // Added for TOS client
+        private static HashSet<int> _additionalEnglishCharacters = new()
+        {
+            // 【
+            0x3010,
+            // 】
+            0x3011,
+            // 〔
+            0x3014,
+            // 〕
+            0x3015,
+            // 〖
+            0x3016,
+            // 〗
+            0x3017,
+            // 〘
+            0x3018,
+            // 〙
+            0x3019,
+            // 〚
+            0x301A,
+            // 〛
+            0x301B,
+            // 〝
+            0x301D,
+            // 〞
+            0x301E,
+            // “
+            0x201C,
+            // ”
+            0x201D,
+            '+', '-', '*', '<', '>', '[', ']', '{', '}', '(', ')'
+        };
+
+        public static bool IsAdditionalEnglishCharacter( char ch )
+        {
+            return _additionalEnglishCharacters.Contains( ch );
+        }
 
         public static bool IsArabicLetter(char ch)
         {
