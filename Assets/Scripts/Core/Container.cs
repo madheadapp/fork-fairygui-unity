@@ -733,7 +733,7 @@ namespace FairyGUI
             for (int i = 0; i < cnt; i++)
             {
                 DisplayObject child = _children[i];
-                child._SetLayerDirect(value);
+                child.layer = value;//._SetLayerDirect( value );
                 if ((child is Container) && child._paintingMode == 0)
                     ((Container)child).SetChildrenLayer(value);
             }

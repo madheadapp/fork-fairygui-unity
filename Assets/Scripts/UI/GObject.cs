@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using FairyGUI.Utils;
+using FairyGUICore;
 
 namespace FairyGUI
 {
@@ -135,6 +136,9 @@ namespace FairyGUI
         EventListener _onGearStop;
         EventListener _onFocusIn;
         EventListener _onFocusOut;
+        
+        // MH TOS 2022.5 Added onDispose Callback
+        EventListener _onDispose;
 
         internal protected bool underConstruct;
         internal float _width;
@@ -317,6 +321,14 @@ namespace FairyGUI
         public EventListener onFocusOut
         {
             get { return _onFocusOut ?? (_onFocusOut = new EventListener(this, "onFocusOut")); }
+        }
+        
+        /// <summary>
+        /// MH TOS 2022.5 Added onDispose Callback
+        /// </summary>
+        public EventListener onDispose
+        {
+            get { return _onDispose ?? (_onDispose = new EventListener(this, "onDispose")); }
         }
 
         /// <summary>
@@ -1492,12 +1504,14 @@ namespace FairyGUI
         /// <returns></returns>
         public Vector2 LocalToGlobal(Vector2 pt)
         {
-            if (_pivotAsAnchor)
-            {
-                pt.x += _width * _pivotX;
-                pt.y += _height * _pivotY;
-            }
-            return displayObject.LocalToGlobal(pt);
+            // if (_pivotAsAnchor)
+            // {
+            //     pt.x += _width * _pivotX;
+            //     pt.y += _height * _pivotY;
+            // }
+            // return displayObject.LocalToGlobal(pt);
+            
+            return this.LocalToUISpace( pt );
         }
 
         /// <summary>
@@ -1507,13 +1521,15 @@ namespace FairyGUI
         /// <returns></returns>
         public Vector2 GlobalToLocal(Vector2 pt)
         {
-            pt = displayObject.GlobalToLocal(pt);
-            if (_pivotAsAnchor)
-            {
-                pt.x -= _width * _pivotX;
-                pt.y -= _height * _pivotY;
-            }
-            return pt;
+            // pt = displayObject.GlobalToLocal(pt);
+            // if (_pivotAsAnchor)
+            // {
+            //     pt.x -= _width * _pivotX;
+            //     pt.y -= _height * _pivotY;
+            // }
+            // return pt;
+
+            return this.UISpaceToLocal( pt );
         }
 
         /// <summary>
@@ -1524,10 +1540,12 @@ namespace FairyGUI
         public Rect LocalToGlobal(Rect rect)
         {
             Rect ret = new Rect();
-            Vector2 v = this.LocalToGlobal(new Vector2(rect.xMin, rect.yMin));
+            // Vector2 v = this.LocalToGlobal(new Vector2(rect.xMin, rect.yMin));
+            Vector2 v = this.LocalToUISpace( new Vector2( rect.xMin, rect.yMin ) );
             ret.xMin = v.x;
             ret.yMin = v.y;
-            v = this.LocalToGlobal(new Vector2(rect.xMax, rect.yMax));
+            // v = this.LocalToGlobal(new Vector2(rect.xMax, rect.yMax));
+            v = this.LocalToUISpace( new Vector2( rect.xMax, rect.yMax ) );
             ret.xMax = v.x;
             ret.yMax = v.y;
             return ret;
@@ -1541,10 +1559,12 @@ namespace FairyGUI
         public Rect GlobalToLocal(Rect rect)
         {
             Rect ret = new Rect();
-            Vector2 v = this.GlobalToLocal(new Vector2(rect.xMin, rect.yMin));
+            // Vector2 v = this.GlobalToLocal(new Vector2(rect.xMin, rect.yMin));
+            Vector2 v = this.UISpaceToLocal( new Vector2( rect.xMin, rect.yMin ) );
             ret.xMin = v.x;
             ret.yMin = v.y;
-            v = this.GlobalToLocal(new Vector2(rect.xMax, rect.yMax));
+            // v = this.GlobalToLocal(new Vector2(rect.xMax, rect.yMax));
+            v = this.GlobalToLocal( new Vector2( rect.xMax, rect.yMax ) );
             ret.xMax = v.x;
             ret.yMax = v.y;
             return ret;
@@ -1661,6 +1681,10 @@ namespace FairyGUI
             if (_disposed)
                 return;
 
+            // MH TOS 2022.5 Added onDispose Callback
+            _onDispose?.Call();
+            // End
+            
             _disposed = true;
 
             RemoveFromParent();

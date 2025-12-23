@@ -329,7 +329,7 @@ namespace FairyGUI
                 if (customCloneMaterials != null)
                     helperMaterials.AddRange(_materialsBackup.Values);
                 else
-                    renderer.GetSharedMaterials(helperMaterials);
+                    renderer.GetMaterials( helperMaterials );
 
                 int cnt2 = helperMaterials.Count;
                 for (int j = 0; j < cnt2; j++)

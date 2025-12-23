@@ -16,7 +16,7 @@ namespace FairyGUI.Utils
 
         public static HtmlPageContext inst = new HtmlPageContext();
 
-        static Transform _poolManager;
+        protected static Transform _poolManager;
 
         public HtmlPageContext()
         {

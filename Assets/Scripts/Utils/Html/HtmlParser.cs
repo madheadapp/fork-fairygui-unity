@@ -23,8 +23,8 @@ namespace FairyGUI.Utils
         protected List<HtmlElement> _elements;
         protected HtmlParseOptions _defaultOptions;
 
-        static List<string> sHelperList1 = new List<string>();
-        static List<string> sHelperList2 = new List<string>();
+        protected static List<string> sHelperList1 = new List<string>();
+        protected static List<string> sHelperList2 = new List<string>();
 
         public HtmlParser()
         {

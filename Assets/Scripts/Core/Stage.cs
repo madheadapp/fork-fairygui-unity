@@ -64,6 +64,7 @@ namespace FairyGUI
         static IKeyboard _keyboard;
 #pragma warning restore 0649
 
+        public bool enabledInputs { get; set; }
         public PlayAudioEvent OnPlayAudio = new ();
         static Stage _inst;
         /// <summary>
@@ -164,6 +165,7 @@ namespace FairyGUI
             : base()
         {
             _inst = this;
+            enabledInputs = true;
             soundVolume = 1;
 
             _updateContext = new UpdateContext();
@@ -798,10 +800,45 @@ namespace FairyGUI
                 TouchInfo touch = _touches[0];
                 _touchTarget = HitTest(pos, true);
                 touch.target = _touchTarget;
+                
+                if ( !enableInputs )
+                {
+                    touch.target = this;
+                }
             }
             else if (touchScreen)
             {
                 _touchTarget = null;
+                
+                var ignoreTouch = false;
+                // Hotfix by Raymond
+                if ( Input.touchCount > 1 && !Input.multiTouchEnabled )
+                {
+                    // Debug.Log( $" >>>> Touch Count: {Input.touchCount}." );
+                    //
+                    // for ( var i = 0 ; i < Input.touchCount ; ++i )
+                    // {
+                    //     var uTouch = Input.GetTouch( i );
+                    //     Debug.Log( $"   - {i}, {uTouch.fingerId}, {uTouch.phase}, {uTouch.type}, {uTouch.tapCount}, {uTouch.deltaTime}" );
+                    // }
+
+                    // Ignore all the touch begin if the number of touch is > 1 
+                    var touchBeganCount = 0;
+
+                    for ( int i = 0 ; i < Input.touchCount ; ++i )
+                    {
+                        var uTouch = Input.GetTouch( i );
+
+                        if ( uTouch.phase == TouchPhase.Began )
+                            touchBeganCount++;
+                    }
+
+                    if ( touchBeganCount > 1 )
+                        ignoreTouch = true;
+                }
+
+                if (!ignoreTouch)
+                {
                 for (int i = 0; i < Input.touchCount; ++i)
                 {
                     Touch uTouch = Input.GetTouch(i);
@@ -839,6 +876,7 @@ namespace FairyGUI
                         touch.target = _touchTarget;
                     }
                 }
+                }
             }
             else
             {
@@ -850,6 +888,11 @@ namespace FairyGUI
                 else
                     _touchTarget = HitTest(pos, true);
                 touch.target = _touchTarget;
+                
+                if ( !enableInputs )
+                {
+                    touch.target = this;
+                }
             }
 
             HitTestContext.ClearRaycastHitCache();
@@ -971,6 +1014,8 @@ namespace FairyGUI
                         _touchPosition = pos;
                     }
                 }
+                
+                _touchPosition = FairyGUISpaceHelper.UnitySpaceToUISpace( _touchPosition );
             }
         }
 
@@ -1115,6 +1160,7 @@ namespace FairyGUI
                 Vector2 pos = uTouch.position;
                 pos.y = _contentRect.height - pos.y;
 
+                pos = FairyGUISpaceHelper.UnitySpaceToUISpace( pos );
                 TouchInfo touch = null;
                 for (int j = 0; j < 5; j++)
                 {
@@ -1461,6 +1507,13 @@ namespace FairyGUI
                 _currentCursor = null;
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
+        }
+        
+        public void UpdateStageSize()
+        {
+            SetSize( Screen.width, Screen.height );
+            
+            DispatchEvent("onStageResized", null);
         }
     }
 

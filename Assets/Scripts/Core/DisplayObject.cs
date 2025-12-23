@@ -378,6 +378,10 @@ namespace FairyGUI
         /// <param name="zv"></param>
         public void SetPosition(float xv, float yv, float zv)
         {
+            if ( cachedTransform == null )
+            {
+                return;
+            }
             Vector3 v = new Vector3();
             v.x = xv;
             v.y = -yv;
@@ -1442,6 +1446,11 @@ namespace FairyGUI
         /// <returns></returns>
         public Vector3 WorldToLocal(Vector3 worldPoint, Vector3 direction)
         {
+            // Hotfix Check null
+            if ( cachedTransform == null )
+            {
+                return Vector3.zero;
+            }
             Vector3 localPoint = this.cachedTransform.InverseTransformPoint(worldPoint);
             if (localPoint.z != 0) //如果对象绕x轴或y轴旋转过，或者对象是在透视相机，那么z值可能不为0，
             {

@@ -102,5 +102,10 @@ namespace FairyGUI
                 obj.displayObject.cachedTransform.SetParent(_manager, false);
             arr.Enqueue(obj);
         }
+
+        public int GetPoolCount(string url)
+        {
+            return _pool.TryGetValue( url, out var qrr ) ? qrr.Count : 0;
+        }
     }
 }
