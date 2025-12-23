@@ -64,6 +64,7 @@ namespace FairyGUI
         static IKeyboard _keyboard;
 #pragma warning restore 0649
 
+        public PlayAudioEvent OnPlayAudio = new ();
         static Stage _inst;
         /// <summary>
         /// 
@@ -615,7 +616,7 @@ namespace FairyGUI
         public void PlayOneShotSound(AudioClip clip, float volumeScale)
         {
             if (_audio != null && this.soundVolume > 0)
-                _audio.PlayOneShot(clip, volumeScale * this.soundVolume);
+                OnPlayAudio?.Invoke( clip, volumeScale * this.soundVolume );
         }
 
         /// <summary>
@@ -625,7 +626,7 @@ namespace FairyGUI
         public void PlayOneShotSound(AudioClip clip)
         {
             if (_audio != null && this.soundVolume > 0)
-                _audio.PlayOneShot(clip, this.soundVolume);
+                OnPlayAudio?.Invoke( clip, this.soundVolume );
         }
 
         /// <summary>
