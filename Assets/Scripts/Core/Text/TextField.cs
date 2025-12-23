@@ -50,7 +50,10 @@ namespace FairyGUI
             -1, -1, 1, -1,
             -1, 1, 1, 1
         };
-        static List<LineCharInfo> sLineChars = new List<LineCharInfo>();
+        
+        // MH: Fix issues when a HTML element contains text field, static properties are not thread safe
+        // and can cause line count and character count to be wrong
+        private List<LineCharInfo> sLineChars = new ();
 
         public TextField()
         {
