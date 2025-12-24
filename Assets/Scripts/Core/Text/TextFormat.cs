@@ -157,6 +157,7 @@ namespace FairyGUI
                 this.gradientColor = null;
             this.align = source.align;
             this.specialStyle = source.specialStyle;
+            this.shadowOffset = source.shadowOffset;
         }
 
         public void FillVertexColors(Color32[] vertexColors)
