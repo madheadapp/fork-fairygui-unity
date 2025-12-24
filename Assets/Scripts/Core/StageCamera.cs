@@ -10,6 +10,8 @@ namespace FairyGUI
     [AddComponentMenu("FairyGUI/UI Camera")]
     public class StageCamera : MonoBehaviour
     {
+        public static float UnitsPerPixel = 1f;
+        
         /// <summary>
         /// 
         /// </summary>
@@ -19,7 +21,7 @@ namespace FairyGUI
         /// 
         /// </summary>
         [NonSerialized]
-        public float unitsPerPixel = 0.02f;
+        public float unitsPerPixel = 1f;
 
         [NonSerialized]
         public Transform cachedTransform;
@@ -48,7 +50,7 @@ namespace FairyGUI
         public static int screenSizeVer = 1;
 
         public const string Name = "Stage Camera";
-        public const string LayerName = "UI";
+        public const string LayerName = "FairyGui";
 
         public static float DefaultCameraSize = 5;
         public static float DefaultUnitsPerPixel = 0.02f;
@@ -96,42 +98,6 @@ namespace FairyGUI
 
         void OnScreenSizeChanged(int newWidth, int newHeight)
         {
-            if (newWidth == 0 || newHeight == 0)
-                return;
-
-            screenWidth = newWidth;
-            screenHeight = newHeight;
-
-            if (constantSize)
-            {
-                cachedCamera.orthographicSize = DefaultCameraSize;
-                unitsPerPixel = cachedCamera.orthographicSize * 2 / screenHeight;
-            }
-            else
-            {
-                unitsPerPixel = DefaultUnitsPerPixel;
-                cachedCamera.orthographicSize = screenHeight / 2 * unitsPerPixel;
-            }
-            cachedTransform.localPosition = new Vector3(cachedCamera.orthographicSize * screenWidth / screenHeight, -cachedCamera.orthographicSize);
-
-            if (isMain)
-            {
-                screenSizeVer++;
-                if (Application.isPlaying)
-                    Stage.inst.HandleScreenSizeChanged(screenWidth, screenHeight, unitsPerPixel);
-                else
-                {
-#if UNITY_2022_2_OR_NEWER
-                    UIContentScaler scaler = GameObject.FindFirstObjectByType<UIContentScaler>();
-#else
-                    UIContentScaler scaler = GameObject.FindObjectOfType<UIContentScaler>();
-#endif
-                    if (scaler != null)
-                        scaler.ApplyChange();
-                    else
-                        UIContentScaler.scaleFactor = 1;
-                }
-            }
         }
 
         void OnRenderObject()
@@ -153,7 +119,18 @@ namespace FairyGUI
         /// </summary>
         public static void CheckMainCamera()
         {
-            if (GameObject.Find(Name) == null)
+            Camera stageCamera = null;
+            var cameras = Resources.FindObjectsOfTypeAll<Camera>();
+            foreach ( var camera in cameras )
+            {
+                if ( camera.name == Name )
+                {
+                    stageCamera = camera;
+                    break;
+                }
+            }
+    
+            if ( stageCamera == null )
             {
                 int layer = LayerMask.NameToLayer(LayerName);
                 CreateCamera(Name, 1 << layer);
