@@ -1634,6 +1634,13 @@ namespace FairyGUI
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
         }
+        
+        public void UpdateStageSize()
+        {
+            SetSize( Screen.width, Screen.height );
+            
+            DispatchEvent("onStageResized", null);
+        }
     }
 
     class TouchInfo
