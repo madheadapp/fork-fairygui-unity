@@ -18,6 +18,17 @@ namespace FairyGUI.Utils
 
         //internal
         LinkEnd,
+        
+        // Extensions
+        // Remember to add to isEntity Property!!
+        Border,
+        ComplexIcon,
+        CharacteristicIcon,
+        MiniIcon,
+        GameplayIcon,
+        RaceIcon,
+        Gem,
+        Skill,
     }
 
     /// <summary>
@@ -158,7 +169,16 @@ namespace FairyGUI.Utils
 
         public bool isEntity
         {
-            get { return type == HtmlElementType.Image || type == HtmlElementType.Select || type == HtmlElementType.Input || type == HtmlElementType.Object; }
+            get
+            {
+                return type is HtmlElementType.Image or HtmlElementType.Select ||
+                       type == HtmlElementType.Input || type == HtmlElementType.Object ||
+                       type == HtmlElementType.Border || type == HtmlElementType.CharacteristicIcon ||
+                       type == HtmlElementType.ComplexIcon || type == HtmlElementType.MiniIcon ||
+                       type == HtmlElementType.GameplayIcon || type == HtmlElementType.RaceIcon ||
+                       type == HtmlElementType.Gem || type == HtmlElementType.Skill;
+                
+            }
         }
 
         #region Pool Support
