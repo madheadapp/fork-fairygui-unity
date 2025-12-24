@@ -67,6 +67,7 @@ namespace FairyGUI
         static IKeyboard _keyboard;
         static bool _keyboardOpened;
 
+        public bool enableInputs { get; set; }
         public PlayAudioEvent OnPlayAudio = new ();
         static Stage _inst;
         /// <summary>
@@ -207,6 +208,7 @@ namespace FairyGUI
         public Stage() : base()
         {
             _inst = this;
+            enableInputs = true;
             soundVolume = 1;
 
             _updateContext = new UpdateContext();
@@ -855,11 +857,37 @@ namespace FairyGUI
                 TouchInfo touch = _touches[0];
                 _touchTarget = HitTest(pos, true);
                 touch.target = _touchTarget;
+                
+                if ( !enableInputs )
+                {
+                    touch.target = this;
+                }
             }
             else if (touchScreen)
             {
                 _touchTarget = null;
 
+                var ignoreTouch = false;
+                // Hotfix by Raymond
+                if (Input.touchCount > 1 && !Input.multiTouchEnabled)
+                {
+                    // Ignore all the touch begin if the number of touch is > 1 
+                    var touchBeganCount = 0;
+
+                    for ( int i = 0 ; i < Input.touchCount ; ++i )
+                    {
+                        var uTouch = Input.GetTouch( i );
+
+                        if ( uTouch.phase == TouchPhase.Began )
+                            touchBeganCount++;
+                    }
+
+                    if ( touchBeganCount > 1 )
+                        ignoreTouch = true;
+                }
+                
+                if ( !ignoreTouch ) // Hotfix by Raymond
+                {
 #if FAIRYGUI_INPUT_SYSTEM
                 foreach (Touch uTouch in Touch.activeTouches)
                 {
@@ -905,6 +933,7 @@ namespace FairyGUI
                         touch.target = _touchTarget;
                     }
                 }
+                } // Hotfix by Raymond
             }
             else
             {
@@ -925,6 +954,11 @@ namespace FairyGUI
                 else
                     _touchTarget = HitTest(pos, true);
                 touch.target = _touchTarget;
+                
+                if ( !enableInputs )
+                {
+                    touch.target = this;
+                }
             }
 
             HitTestContext.ClearRaycastHitCache();
@@ -1076,6 +1110,8 @@ namespace FairyGUI
                         _touchPosition = pos;
                     }
                 }
+                
+                _touchPosition = FairyGUICore.FairyGUISpaceHelper.UnitySpaceToUISpace( _touchPosition );
             }
         }
 
@@ -1246,6 +1282,7 @@ namespace FairyGUI
 #endif
                 pos.y = _contentRect.height - pos.y;
 
+                pos = FairyGUICore.FairyGUISpaceHelper.UnitySpaceToUISpace( pos );
                 TouchInfo touch = null;
                 for (int j = 0; j < 5; j++)
                 {
