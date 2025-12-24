@@ -2,7 +2,7 @@
     "name": "FairyGUI-Editor",
     "rootNamespace": "",
     "references": [
-        "FairyGUI"
+        "FairySDK"
     ],
     "includePlatforms": [
         "Editor"
