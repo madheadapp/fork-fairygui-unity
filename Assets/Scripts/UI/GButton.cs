@@ -470,7 +470,7 @@ namespace FairyGUI
             _mode = (ButtonMode)buffer.ReadByte();
             string str = buffer.ReadS();
             if (str != null)
-                sound = UIPackage.GetItemAssetByURL(str) as NAudioClip;
+                sound = UIConfig.soundLoader?.Invoke(str);
             soundVolumeScale = buffer.ReadFloat();
             _downEffect = buffer.ReadByte();
             _downEffectValue = buffer.ReadFloat();
@@ -532,7 +532,7 @@ namespace FairyGUI
 
             str = buffer.ReadS();
             if (str != null)
-                sound = UIPackage.GetItemAssetByURL(str) as NAudioClip;
+                sound = UIConfig.soundLoader?.Invoke(str);
             if (buffer.ReadBool())
                 soundVolumeScale = buffer.ReadFloat();
 
