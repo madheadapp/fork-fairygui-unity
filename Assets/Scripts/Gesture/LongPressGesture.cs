@@ -59,7 +59,7 @@ namespace FairyGUI
             this.host = host;
             trigger = TRIGGER;
             interval = INTERVAL;
-            holdRangeRadius = 50;
+            holdRangeRadius = 15;
             Enable(true);
 
             onBegin = new EventListener(this, "onLongPressBegin");
@@ -113,7 +113,7 @@ namespace FairyGUI
         void __touchBegin(EventContext context)
         {
             InputEvent evt = context.inputEvent;
-            _startPoint = host.GlobalToLocal(new Vector2(evt.x, evt.y));
+            _startPoint = new Vector2(evt.x, evt.y);
             _started = false;
             _touchId = evt.touchId;
 
@@ -123,8 +123,8 @@ namespace FairyGUI
 
         void __timer(object param)
         {
-            Vector2 pt = host.GlobalToLocal(Stage.inst.GetTouchPosition(_touchId));
-            if (Mathf.Pow(pt.x - _startPoint.x, 2) + Mathf.Pow(pt.y - _startPoint.y, 2) > Mathf.Pow(holdRangeRadius, 2))
+            var distance = Vector2.Distance( Stage.inst.GetTouchPosition(_touchId), _startPoint );
+            if (distance > holdRangeRadius)
             {
                 Timers.inst.Remove(__timer);
                 return;
