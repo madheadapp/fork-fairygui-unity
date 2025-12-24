@@ -1373,10 +1373,7 @@ namespace FairyGUI
                         TValue_Sound value = (TValue_Sound)item.value;
                         if (value.audioClip == null)
                         {
-                            if (UIConfig.soundLoader == null || value.sound.StartsWith(UIPackage.URL_PREFIX))
-                                value.audioClip = UIPackage.GetItemAssetByURL(value.sound) as NAudioClip;
-                            else
-                                value.audioClip = UIConfig.soundLoader(value.sound);
+                            value.audioClip = UIConfig.soundLoader?.Invoke(value.sound);
                         }
 
                         if (value.audioClip != null && value.audioClip.nativeClip != null)
