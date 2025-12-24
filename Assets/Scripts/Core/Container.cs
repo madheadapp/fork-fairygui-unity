@@ -296,7 +296,7 @@ namespace FairyGUI
         /// </summary>
         public void RemoveChildren()
         {
-            RemoveChildren(0, int.MaxValue, false);
+            RemoveChildren(0, int.MaxValue, true);
         }
 
         /// <summary>
