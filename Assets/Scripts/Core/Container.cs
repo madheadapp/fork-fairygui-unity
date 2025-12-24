@@ -737,7 +737,7 @@ namespace FairyGUI
                 if (child._paintingMode > 0)
                     child.paintingGraphics.gameObject.layer = value;
                 else
-                    child._SetLayerDirect(value);
+                    child.layer = value;//._SetLayerDirect( value );
                 if ((child is Container) && child._paintingMode == 0)
                     ((Container)child).SetChildrenLayer(value);
             }
