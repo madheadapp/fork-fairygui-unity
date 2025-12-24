@@ -44,7 +44,10 @@ namespace FairyGUI
         const int GUTTER_Y = 2;
         const float IMAGE_BASELINE = 0.8f;
         const int ELLIPSIS_LENGTH = 2;
-        static List<LineCharInfo> sLineChars = new List<LineCharInfo>();
+        
+        // MH: Fix issues when a HTML element contains text field, static properties are not thread safe
+        // and can cause line count and character count to be wrong
+        private List<LineCharInfo> sLineChars = new ();
 
         public TextField()
         {
@@ -823,6 +826,7 @@ namespace FairyGUI
                             || ch == '.' || ch == '"' || ch == '\''
                             || format.specialStyle == TextFormat.SpecialStyle.Subscript
                             || format.specialStyle == TextFormat.SpecialStyle.Superscript
+                            || RTLSupport.IsAdditionalEnglishCharacter( ch )
                             || _textDirection != RTLSupport.DirectionType.UNKNOW && RTLSupport.IsArabicLetter(ch))
                         {
                             wordLen++;
