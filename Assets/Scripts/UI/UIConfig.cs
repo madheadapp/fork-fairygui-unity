@@ -123,7 +123,7 @@ namespace FairyGUI
         /// <summary>
         /// Pixel offsets of finger to trigger scrolling
         /// </summary>
-        public static int touchScrollSensitivity = 20;
+        public static int touchScrollSensitivity = 10;
 
         /// <summary>
         /// Pixel offsets of finger to trigger dragging
