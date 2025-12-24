@@ -37,7 +37,7 @@ namespace FairyGUI.Utils
         /// <summary>
         /// 
         /// </summary>
-        public static bool DefaultLinkUnderline = true;
+        public static bool DefaultLinkUnderline = false;
 
         /// <summary>
         /// 
