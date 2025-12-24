@@ -24,9 +24,10 @@ namespace FairyGUI.Utils
                     _inst = new HtmlPageContext();
                 return _inst;
             }
+            set => _inst = value;
         }
 
-        static Transform _poolManager;
+        protected static Transform _poolManager;
 
 #if UNITY_2019_3_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
