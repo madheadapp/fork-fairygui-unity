@@ -412,7 +412,7 @@ namespace FairyGUI
                     StageCamera sc = cam.GetComponent<StageCamera>();
                     if (sc == null)
                         sc = StageCamera.main.GetComponent<StageCamera>();
-                    this.container.scale = new Vector2(sc.unitsPerPixel * UIContentScaler.scaleFactor, sc.unitsPerPixel * UIContentScaler.scaleFactor);
+                    this.container.scale = new Vector2(StageCamera.UnitsPerPixel * UIContentScaler.scaleFactor, StageCamera.UnitsPerPixel * UIContentScaler.scaleFactor);
                 }
             }
 
