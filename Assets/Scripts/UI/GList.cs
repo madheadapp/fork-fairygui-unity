@@ -1269,6 +1269,55 @@ namespace FairyGUI
         {
             ScrollToView(index, ani, false);
         }
+        
+        /// <summary>
+        ///  Get Item Rect from list by Item Index.
+        /// </summary>
+        /// <param name="index">Item index</param>
+        public Rect GetItemRectByItemIndex(int index)
+        {
+            if (_virtual)
+            {
+                if (_numItems == 0)
+                    return Rect.zero;
+
+                CheckVirtualList();
+
+                if (index >= _virtualItems.Count)
+                    throw new Exception("Invalid child index: " + index + ">" + _virtualItems.Count);
+
+                if (_loop)
+                    index = Mathf.FloorToInt((float)_firstIndex / _numItems) * _numItems + index;
+
+                Rect rect;
+                ItemInfo ii = _virtualItems[index];
+                if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
+                {
+                    float pos = 0;
+                    for (int i = _curLineItemCount - 1; i < index; i += _curLineItemCount)
+                        pos += _virtualItems[i].size.y + _lineGap;
+                    rect = new Rect(0, pos, _itemSize.x, ii.size.y);
+                }
+                else if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.FlowVertical)
+                {
+                    float pos = 0;
+                    for (int i = _curLineItemCount - 1; i < index; i += _curLineItemCount)
+                        pos += _virtualItems[i].size.x + _columnGap;
+                    rect = new Rect(pos, 0, ii.size.x, _itemSize.y);
+                }
+                else
+                {
+                    int page = index / (_curLineItemCount * _curLineItemCount2);
+                    rect = new Rect(page * viewWidth + (index % _curLineItemCount) * (ii.size.x + _columnGap),
+                        (index / _curLineItemCount) % _curLineItemCount2 * (ii.size.y + _lineGap),
+                        ii.size.x, ii.size.y);
+                }
+
+                return rect;
+            }
+            var obj = GetChildAt(index);
+            return obj == null ? Rect.zero : new Rect(obj.x, obj.y, obj.width, obj.height);
+        }
 
         /// <summary>
         ///  Scroll the list to make an item with certain index visible.
@@ -1315,6 +1364,7 @@ namespace FairyGUI
                         ii.size.x, ii.size.y);
                 }
 
+                setFirst = true;//因为在可变item大小的情况下，只有设置在最顶端，位置才不会因为高度变化而改变，所以只能支持setFirst=true
                 if (this.scrollPane != null)
                     scrollPane.ScrollToView(rect, ani, setFirst);
                 else if (parent != null && parent.scrollPane != null)
