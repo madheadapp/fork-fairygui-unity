@@ -214,7 +214,7 @@ namespace FairyGUI
 
         void UpdateMatrix()
         {
-            if (_target == null)
+            if (_target == null || _matrix == null)
                 return;
 
             Matrix4x4 matrix = new Matrix4x4();
@@ -226,13 +226,13 @@ namespace FairyGUI
             Vector4 offset = new Vector4(_matrix[4], _matrix[9], _matrix[14], _matrix[19]);
 
             MaterialPropertyBlock block;
-            if ((_target is Image) || (_target is MovieClip))
-                block = _target.graphics.materialPropertyBlock;
+            if (_target is Image or MovieClip)
+                block = _target.graphics?.materialPropertyBlock;
             else
-                block = _target.paintingGraphics.materialPropertyBlock;
+                block = _target.paintingGraphics?.materialPropertyBlock;
 
-            block.SetMatrix(ShaderConfig.ID_ColorMatrix, matrix);
-            block.SetVector(ShaderConfig.ID_ColorOffset, offset);
+            block?.SetMatrix(ShaderConfig.ID_ColorMatrix, matrix);
+            block?.SetVector(ShaderConfig.ID_ColorOffset, offset);
         }
     }
 }
