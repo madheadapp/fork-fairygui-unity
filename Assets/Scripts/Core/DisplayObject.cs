@@ -606,7 +606,7 @@ namespace FairyGUI
                 _flags |= Flags.OutlineChanged;
                 if (_perspective)
                     UpdateTransformMatrix();
-                else
+                else if (cachedTransform != null)
                 {
                     cachedTransform.localEulerAngles = _rotation;
                     ApplyPivot();
