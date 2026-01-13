@@ -552,6 +552,7 @@ namespace FairyGUI
         /// <param name="yv"></param>
         public void SetScale(float xv, float yv)
         {
+            if (cachedTransform == null) return;
             Vector3 v = new Vector3();
             v.x = v.z = ValidateScale(xv);
             v.y = ValidateScale(yv);
@@ -792,6 +793,8 @@ namespace FairyGUI
 
         void ApplyPivot()
         {
+            if (cachedTransform == null) return;
+
             if (_pivot.x != 0 || _pivot.y != 0)
             {
                 Vector3 oldOffset = _pivotOffset;
