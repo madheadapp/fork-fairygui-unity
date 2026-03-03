@@ -314,6 +314,7 @@ namespace FairyGUI
             get { return cachedTransform.localPosition.x; }
             set
             {
+                if (cachedTransform == null) return;
                 SetPosition(value, -cachedTransform.localPosition.y, cachedTransform.localPosition.z);
             }
         }
@@ -326,6 +327,7 @@ namespace FairyGUI
             get { return -cachedTransform.localPosition.y; }
             set
             {
+                if (cachedTransform == null) return;
                 SetPosition(cachedTransform.localPosition.x, value, cachedTransform.localPosition.z);
             }
         }
@@ -338,6 +340,7 @@ namespace FairyGUI
             get { return cachedTransform.localPosition.z; }
             set
             {
+                if (cachedTransform == null) return;
                 SetPosition(cachedTransform.localPosition.x, -cachedTransform.localPosition.y, value);
             }
         }
@@ -348,7 +351,11 @@ namespace FairyGUI
         public Vector2 xy
         {
             get { return new Vector2(this.x, this.y); }
-            set { SetPosition(value.x, value.y, cachedTransform.localPosition.z); }
+            set
+            {
+                if (cachedTransform == null) return;
+                SetPosition(value.x, value.y, cachedTransform.localPosition.z);
+            }
         }
 
         /// <summary>
@@ -367,6 +374,7 @@ namespace FairyGUI
         /// <param name="yv"></param>
         public void SetXY(float xv, float yv)
         {
+            if (cachedTransform == null) return;
             SetPosition(xv, yv, cachedTransform.localPosition.z);
         }
 
@@ -378,24 +386,18 @@ namespace FairyGUI
         /// <param name="zv"></param>
         public void SetPosition(float xv, float yv, float zv)
         {
-            if ( cachedTransform == null )
-            {
-                return;
-            }
             Vector3 v = new Vector3();
             v.x = xv;
             v.y = -yv;
             v.z = zv;
-            if (v != cachedTransform.localPosition)
+
+            if(cachedTransform != null) cachedTransform.localPosition = v;
+            _flags |= Flags.OutlineChanged;
+            if ((_flags & Flags.PixelPerfect) != 0)
             {
-                cachedTransform.localPosition = v;
-                _flags |= Flags.OutlineChanged;
-                if ((_flags & Flags.PixelPerfect) != 0)
-                {
-                    //总在下一帧再完成PixelPerfect，这样当物体在连续运动时，不会因为PixelPerfect而发生抖动。
-                    _checkPixelPerfect = Time.frameCount;
-                    _pixelPerfectAdjustment = Vector3.zero;
-                }
+                //总在下一帧再完成PixelPerfect，这样当物体在连续运动时，不会因为PixelPerfect而发生抖动。
+                _checkPixelPerfect = Time.frameCount;
+                _pixelPerfectAdjustment = Vector3.zero;
             }
         }
 
@@ -523,7 +525,7 @@ namespace FairyGUI
             {
                 Vector3 v = cachedTransform.localScale;
                 v.x = v.z = ValidateScale(value);
-                cachedTransform.localScale = v;
+                if(cachedTransform != null) cachedTransform.localScale = v;
                 _flags |= Flags.OutlineChanged;
                 ApplyPivot();
             }
@@ -539,7 +541,7 @@ namespace FairyGUI
             {
                 Vector3 v = cachedTransform.localScale;
                 v.y = ValidateScale(value);
-                cachedTransform.localScale = v;
+                if(cachedTransform != null) cachedTransform.localScale = v;
                 _flags |= Flags.OutlineChanged;
                 ApplyPivot();
             }
@@ -552,11 +554,10 @@ namespace FairyGUI
         /// <param name="yv"></param>
         public void SetScale(float xv, float yv)
         {
-            if (cachedTransform == null) return;
             Vector3 v = new Vector3();
             v.x = v.z = ValidateScale(xv);
             v.y = ValidateScale(yv);
-            cachedTransform.localScale = v;
+            if (cachedTransform != null) cachedTransform.localScale = v;
             _flags |= Flags.OutlineChanged;
             ApplyPivot();
         }
@@ -606,11 +607,10 @@ namespace FairyGUI
                 _flags |= Flags.OutlineChanged;
                 if (_perspective)
                     UpdateTransformMatrix();
-                else if (cachedTransform != null)
-                {
+
+                if (cachedTransform != null) 
                     cachedTransform.localEulerAngles = _rotation;
-                    ApplyPivot();
-                }
+                ApplyPivot();
             }
         }
 
@@ -631,7 +631,8 @@ namespace FairyGUI
                     UpdateTransformMatrix();
                 else
                 {
-                    cachedTransform.localEulerAngles = _rotation;
+                    if (cachedTransform != null) 
+                        cachedTransform.localEulerAngles = _rotation;
                     ApplyPivot();
                 }
             }
@@ -654,7 +655,8 @@ namespace FairyGUI
                     UpdateTransformMatrix();
                 else
                 {
-                    cachedTransform.localEulerAngles = _rotation;
+                    if (cachedTransform != null) 
+                        cachedTransform.localEulerAngles = _rotation;
                     ApplyPivot();
                 }
             }
@@ -689,6 +691,7 @@ namespace FairyGUI
             }
             set
             {
+                if (cachedTransform == null) return;
                 if (_perspective != value)
                 {
                     _perspective = value;
@@ -771,15 +774,20 @@ namespace FairyGUI
 
                 _pivot = value;
                 UpdatePivotOffset();
-                Vector3 v = cachedTransform.localPosition;
-                v += oldOffset - _pivotOffset + deltaPivot;
-                cachedTransform.localPosition = v;
+                if (cachedTransform != null)
+                {
+                    Vector3 v = cachedTransform.localPosition;
+                    v += oldOffset - _pivotOffset + deltaPivot;
+                    cachedTransform.localPosition = v;
+                }
                 _flags |= Flags.OutlineChanged;
             }
         }
 
         void UpdatePivotOffset()
         {
+            if (cachedTransform == null) return;
+
             float px = _pivot.x * _contentRect.width;
             float py = _pivot.y * _contentRect.height;
 
