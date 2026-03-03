@@ -885,8 +885,9 @@ namespace FairyGUI
                 float bottom = _yPos + _viewSize.y;
                 if (setFirst || rect.y <= _yPos || rect.height >= _viewSize.y)
                 {
-                    if (!setFirst && rect.yMax >= bottom) //if an item size is large than viewSize, dont scroll
-                        return;
+                    // MH: remove this to fix when item size is larger, it won't scroll.
+                    // if (!setFirst && rect.yMax >= bottom) //if an item size is large than viewSize, dont scroll
+                    //     return;
 
                     if (_pageMode)
                         this.SetPosY(Mathf.Floor(rect.y / _pageSize.y) * _pageSize.y, ani);
@@ -908,8 +909,9 @@ namespace FairyGUI
                 float right = _xPos + _viewSize.x;
                 if (setFirst || rect.x <= _xPos || rect.width >= _viewSize.x)
                 {
-                    if (!setFirst && rect.xMax >= right) //if an item size is large than viewSize, dont scroll
-                        return;
+                    // MH: remove this to fix when item size is larger, it won't scroll.
+                    // if (!setFirst && rect.xMax >= right) //if an item size is large than viewSize, dont scroll
+                    //     return;
 
                     if (_pageMode)
                         this.SetPosX(Mathf.Floor(rect.x / _pageSize.x) * _pageSize.x, ani);
